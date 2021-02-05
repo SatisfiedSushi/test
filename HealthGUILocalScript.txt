@@ -1,0 +1,9 @@
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+wait(1)
+local humanoid = character.Humanoid
+
+humanoid.HealthChanged:Connect(function(health)
+	local healthGui = player.PlayerGui.HealthGui
+	healthGui.Health.Frame.Size = UDim2.new(health/100, 0, 0, 38)
+end)

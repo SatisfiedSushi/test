@@ -1,0 +1,82 @@
+--made by pablospanish
+
+local PingFps_public = true
+
+local LocalScript = script:WaitForChild("PingReplicator")
+local UI = script:WaitForChild("Ping/FPS")
+
+LocalScript.Parent = game.ReplicatedFirst
+UI.Parent = game.StarterGui
+
+local Ping_remote = game.ReplicatedStorage:FindFirstChild("PingSend") or Instance.new("RemoteFunction", game.ReplicatedStorage)
+local Public_ping = game.ReplicatedStorage:FindFirstChild("PublicPing") or Instance.new("RemoteEvent", game.ReplicatedStorage)
+
+local Informacion = {}
+
+local Tick = game.ReplicatedStorage:FindFirstChild("GameTick") or Instance.new("NumberValue", game.ReplicatedStorage)
+Tick.Name = "GameTick"
+
+Ping_remote.Name = "PingSend"
+Public_ping.Name = "PublicPing"
+
+local Replicar_info = function(Players, To)
+	
+	if Players == nil then return nil end
+	if To == nil then return nil end
+	
+	local Table = {}
+	
+	for _, v in pairs(Players) do
+		local Info = Informacion[tostring(v.UserId)]
+		if Info ~= nil then
+			local Weas = {v.Name, Info[1], Info[2]}
+			table.insert(Table, #Table+1, Weas)
+		end
+	end
+	Public_ping:FireClient(To, Table)
+end
+
+Ping_remote.OnServerInvoke = function(Player, ...)
+	local Argumentos = {...}
+	
+	local FPS = Argumentos[1]
+	local Ping = Argumentos[2]
+	
+	Informacion[tostring(Player.UserId)] = {tostring(FPS), tostring(Ping)}
+
+	return true
+end
+
+local function GetPlayer(Nombre)
+	for _, v in pairs(game.Players:GetPlayers()) do
+		if v.Name:lower():sub(1, Nombre:len()) == Nombre then
+			return v
+		end
+	end
+end
+
+game.Players.PlayerAdded:connect(function(Player)
+	
+	Player.Chatted:connect(function(Message)
+		
+		if PingFps_public == true then
+			Message = Message:lower()
+			if Message:sub(1, 6) == "!ping " then
+				local Nombre = Message:sub(7)
+				local Jugadores = GetPlayer(Nombre)
+				
+				if Nombre == "me" then
+					Jugadores = {Player}
+				elseif Nombre == "all" then
+					Jugadores = game.Players:GetPlayers()
+				end
+				
+				if Jugadores ~= nil then
+					Replicar_info(Jugadores, Player)
+				end
+			end
+		end
+		
+	end)
+end)
+--longsawk0102 was here

@@ -1,0 +1,27 @@
+local enemies = game:GetService("ReplicatedStorage"):WaitForChild("Enemies"):GetChildren()
+
+while wait(30) do
+	print("run")
+	local players = game.Players:GetPlayers()
+	print("players")
+	for i,v in ipairs(players) do
+		print("i,v")
+		local root = v.Character:FindFirstChild("HumanoidRootPart")
+		if root then
+			print("valid root")
+			for i = 1, math.random(10) do
+				local enemy = enemies[math.random(#enemies)]:Clone()
+				print("clone")
+				local xRand = math.random(-500, 500)
+				local zRand = math.random(-500, 500)
+				enemy.Parent = workspace
+				enemy:MoveTo(root.Position + Vector3.new(xRand,0,zRand))
+				local ray = Ray.new(enemy.PrimaryPart.Position, Vector3.new(0,-25,0))
+				local hit,pos = workspace:FindPartOnRayWithIgnoreList(ray,{enemy})
+				--if pos then
+					--enemy:MoveTo(pos + Vector3.new(0,5,0))
+				--end
+			end
+		end
+	end
+end

@@ -1,0 +1,128 @@
+local player = script.Parent.Parent.Parent
+local tray = script.Parent.Tray
+local bar = tray.Bar
+local conf = script.Parent.Configuration
+local thirst = conf.Thirst
+local lrate = conf.LossRate
+local lamount = conf.LossAmount
+local flashes = conf.FlashesRedWhenLow
+local percent = flashes.FlashesWhenLessThanPercent
+local r = nil
+local g = nil
+local b = nil
+
+player.Character.Humanoid.Running:connect(function(speed)
+	running = true
+	repeat wait() until speed == 0
+	running = nil
+end)
+
+function changeRGBIntervals1()
+	while true do
+		wait(0.01)
+		if flashes.Value == true then
+			if (thirst.Value / thirst.MaxValue) <= percent.Value then
+				for i = 1, 25  do
+					wait(0.01)
+					r = (i * 10) / 255
+				end
+				for i = 1, 25  do
+					wait(0.01)
+					r = (250 - (i * 10)) / 255
+				end
+			end
+		end
+	end
+end
+
+--[[function changeRGBIntervals2()
+	while true do
+		wait(0.01)
+		if flashes.Value == true then
+			if (thirst.Value / thirst.MaxValue) <= percent.Value then
+				for i = 1, 17  do
+					wait(0.25 / 17)
+					g = (170 - (i * 10)) / 255
+				end
+				wait(0.75)
+				for i = 1, 17  do
+					wait(0.25 / 17)
+					g = (i * 10) / 255
+				end
+			end
+			wait(0.75)
+		end
+	end
+end
+]]
+
+--[[function changeRGBIntervals3()
+	while true do
+		wait(0.01)
+		if flashes.Value == true then
+			if (thirst.Value / thirst.MaxValue) <= percent.Value then
+				for i = 1, 25  do
+					wait(0.25 / 25)
+					b = (250 - (i * 10)) / 255
+				end
+				wait(0.75)
+				for i = 1, 25  do
+					wait(0.25 / 25)
+					b = (i * 10) / 255
+				end
+			end
+			wait(0.75)
+		end
+	end
+end
+]]
+
+function changeBarColor()
+	while true do
+		wait(0.01)
+		if flashes.Value == true then
+			if (thirst.Value / thirst.MaxValue) <= percent.Value then
+				bar.BackgroundColor3 = Color3.new(r, 170 / 255, 250 / 255)
+			end
+		end
+	end
+end
+
+function depleteThirst()
+	while true do
+		wait(0.01)
+		if thirst.Value >= thirst.MinValue then
+			wait(running ~= nil and lrate.Value / 1.275 or lrate.Value)
+			thirst.Value = thirst.Value - lamount.Value
+			if thirst.Value / thirst.MaxValue > percent.Value then
+				bar.BackgroundColor3 = Color3.new(0, 170 / 255, 250 / 255)
+			end
+		end
+	end
+end
+
+function updateSize()
+	while true do
+		wait(0.01)
+		bar.Size = UDim2.new(thirst.Value / thirst.MaxValue, 0, 1.57, 0)
+		--shad.Size = UDim2.new(thirst.Value / thirst.MaxValue, 0, 0.5, 0)
+	end
+end
+
+function killPlayer()
+	while player.Character.Humanoid.Health > 0 do
+		wait(1)
+		if thirst.Value <= thirst.MinValue then
+			player.Character.Humanoid.Health = player.Character.Humanoid.Health - 10
+		end
+	end
+end
+
+coroutine.resume(coroutine.create(depleteThirst))
+coroutine.resume(coroutine.create(updateSize))
+coroutine.resume(coroutine.create(killPlayer))
+coroutine.resume(coroutine.create(changeBarColor))
+coroutine.resume(coroutine.create(changeRGBIntervals1))
+--coroutine.resume(coroutine.create(changeRGBIntervals2))
+--coroutine.resume(coroutine.create(changeRGBIntervals3))
+

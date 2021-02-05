@@ -1,0 +1,68 @@
+local player = script.Parent.Parent.Parent
+local tray = script.Parent.Tray
+local bar = tray.Bar
+local conf = script.Parent.Configuration
+local hunger = conf.Hunger
+local lrate = conf.LossRate
+local lamount = conf.LossAmount
+local flashes = conf.FlashesRedWhenLow
+local percent = flashes.FlashesWhenLessThanPercent
+
+player.Character.Humanoid.Running:connect(function(speed)
+	running = true
+	repeat wait() until speed == 0
+	running = nil
+end)
+
+function changeBarColor()
+	while true do
+	wait(0.01)
+		if flashes.Value == true then
+			if (hunger.Value / hunger.MaxValue) <= percent.Value then
+				for i = 1, 11  do
+					wait(0.01)
+					bar.BackgroundColor3 = Color3.new(255 / 255, (110 - (i * 10)) / 255, 0)
+				end
+				for i = 1, 11  do
+					wait(0.01)
+					bar.BackgroundColor3 = Color3.new(255 / 255, (i * 10) / 255, 0)
+				end
+			end
+		end
+	end
+end
+
+function depleteHunger()
+	while true do
+		wait(0.01)
+		if hunger.Value >= hunger.MinValue then
+			wait(running ~= nil and lrate.Value / 1.225 or lrate.Value)
+			hunger.Value = hunger.Value - lamount.Value
+			if hunger.Value / hunger.MaxValue > percent.Value then
+				bar.BackgroundColor3 = Color3.new(255 / 255, 110 / 255, 0)
+			end
+		end
+	end
+end
+
+function updateSize()
+	while true do
+		wait(0.01)
+		bar.Size = UDim2.new(hunger.Value / hunger.MaxValue, 0, 1.57, 0)
+		--shad.Size = UDim2.new(hunger.Value / hunger.MaxValue, 0, 0.5, 0)
+	end
+end
+
+function killPlayer()
+	while player.Character.Humanoid.Health > 0 do
+		wait(1)
+		if hunger.Value <= hunger.MinValue then
+			player.Character.Humanoid.Health = player.Character.Humanoid.Health - 10
+		end
+	end
+end
+
+coroutine.resume(coroutine.create(depleteHunger))
+coroutine.resume(coroutine.create(updateSize))
+coroutine.resume(coroutine.create(killPlayer))
+coroutine.resume(coroutine.create(changeBarColor))

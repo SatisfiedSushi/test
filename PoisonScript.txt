@@ -1,0 +1,15 @@
+waittime = math.random(60, 300)
+bitesbeforefrenzy = math.random(3, 5)
+frenzyunleashed = false
+timewated = 0
+while true do
+	timewated = timewated + 1
+	script.Parent.Humanoid:TakeDamage(frenzyunleashed == false and script.Poison.Value or (10 * (bitesbeforefrenzy - 1)))
+	wait(1)
+	if script.Poison.Value >= bitesbeforefrenzy then
+		frenzyunleashed = true
+	end
+	if timewated == waittime then
+		script:remove()
+	end
+end

@@ -1,0 +1,92 @@
+repeat wait() until  game.ReplicatedStorage:FindFirstChild("PingSend") ~= nil
+
+local Ping_remote = game.ReplicatedStorage:FindFirstChild("PingSend")
+
+local Player = game.Players.LocalPlayer
+local UIS = game:GetService("UserInputService")
+
+local Topbar_transparency = 1
+
+local Frames, Ping = 0, 0
+
+local function Check_topbar()
+	local Ya = pcall(function()
+		Player.PlayerGui:SetTopbarTransparency(Topbar_transparency)
+	end)
+	return Ya
+end
+
+repeat
+	wait()
+until Check_topbar() == true
+
+local Frame
+
+if UIS.TouchEnabled == false then
+	script.Parent:WaitForChild("PC").Visible = true
+	script.Parent:WaitForChild("Mobile"):Destroy()
+	Frame = script.Parent:WaitForChild("PC")
+else
+	script.Parent:WaitForChild("Mobile").Visible = true
+	script.Parent:WaitForChild("PC"):Destroy()
+	Frame = script.Parent:WaitForChild("Mobile")
+end
+
+if Frame ~= nil then
+	
+	local Ping_label = Frame:WaitForChild("Ping")
+	local FPS_label = Frame:WaitForChild("FPS")
+	
+	local function Get_ping()
+		local Tiempo = tick()
+		local Solicitud = Ping_remote:InvokeServer(Frames, Ping)
+		local Transcurrido = math.abs(Tiempo-tick())
+		
+		local Calculo = math.floor(Transcurrido*1000)
+		Ping = Calculo
+		
+		return Calculo
+	end
+	
+	local function Actualizar()
+		local Ping = Get_ping()
+		Ping_label.Text = tostring(Ping == nil and "error" or Ping) .. " ms"
+	end
+	
+	Actualizar()
+	
+	spawn(function()
+		while wait(1) do
+			Actualizar()
+		end
+	end)
+	
+	local Heartbeat = game:GetService("RunService").Heartbeat
+	
+	local LastIteration, Start
+	local FrameUpdateTable = { }
+	
+	local Last_actualizacion = 0
+	
+	local function HeartbeatUpdate()
+		LastIteration = tick()
+		for Index = #FrameUpdateTable, 1, -1 do
+			FrameUpdateTable[Index + 1] = (FrameUpdateTable[Index] >= LastIteration - 1) and FrameUpdateTable[Index] or nil
+		end
+		
+		FrameUpdateTable[1] = LastIteration
+		local CurrentFPS = (tick() - Start >= 1 and #FrameUpdateTable) or (#FrameUpdateTable / (tick() - Start))
+		CurrentFPS = math.floor(CurrentFPS )
+		
+		local Actual = tick()
+		
+		if math.abs(Last_actualizacion-Actual) >= 0.075 then
+			Last_actualizacion = Actual
+			FPS_label.Text = "" .. CurrentFPS .. " fps"
+			Frames = CurrentFPS
+		end
+	end
+	
+	Start = tick()
+	Heartbeat:Connect(HeartbeatUpdate)
+end

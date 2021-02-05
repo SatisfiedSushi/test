@@ -1,0 +1,124 @@
+game.Players.PlayerAdded:Connect(function(plr)
+	wait()
+	local SunFX = script.LensFlareGui:Clone()
+	SunFX.Parent = plr.PlayerGui
+end)
+
+
+
+print('Voxel: SEGI LIGHTING loaded..')
+
+wait(2)
+script.Beep:Play()
+
+Lighting = game:GetService("Lighting")
+
+wait(0.1)
+
+Lighting.Brightness = 1
+Lighting.ExposureCompensation = 1.2
+
+Lighting.ShadowSoftness = 0.2
+
+Lighting.OutdoorAmbient = Color3.new(139/255, 139/255, 139/255)
+Lighting.Ambient = Color3.new(2/255, 2/255, 2/255)
+
+SunFlare = Instance.new("SunRaysEffect", Lighting)
+SunFlare.Intensity = 0.059
+SunFlare.Spread = 0.356
+
+ColorCorrection = Instance.new("ColorCorrectionEffect", Lighting)
+ColorCorrection.TintColor = Color3.new(229/255, 231/255, 255/255)
+ColorCorrection.Contrast = 0.1
+ColorCorrection.Brightness = 0
+ColorCorrection.Saturation = 0.1
+
+
+Lighting.FogEnd = 2500
+Lighting.FogStart = 0
+Lighting.FogColor = Color3.new(160/255, 214/255, 255/255)
+
+--- water
+
+workspace.Terrain.WaterTransparency = 1
+workspace.Terrain.WaterReflectance = 0.2
+
+sky = script.Sky
+sky.Parent = Lighting
+
+
+
+
+local Blur = Instance.new("BlurEffect")
+Blur.Parent = game.Lighting
+Blur.Size = 25
+wait(0.1)
+Blur.Size = 24
+wait(0.1)
+Blur.Size = 23
+wait(0.1)
+Blur.Size = 22
+wait(0.1)
+Blur.Size = 21
+wait(0.1)
+Blur.Size = 20
+wait(0.1)
+Blur.Size = 19
+wait(0.1)
+Blur.Size = 18
+wait(0.1)
+Blur.Size = 17
+wait(0.1)
+Blur.Size = 16
+wait(0.1)
+Blur.Size = 15
+wait(0.1)
+Blur.Size = 14
+wait(0.1)
+Blur.Size = 13
+wait(0.1)
+Blur.Size = 12
+wait(0.1)
+Blur.Size = 11
+wait(0.1)
+Blur.Size = 10
+wait(0.1)
+Blur.Size = 9
+wait(0.1)
+Blur.Size = 8
+wait(0.1)
+Blur.Size = 7
+wait(0.1)
+Blur.Size = 6
+wait(0.1)
+Blur.Size = 5
+wait(0.1)
+Blur.Size = 4
+wait(0.1)
+Blur.Size = 3
+wait(0.1)
+Blur.Size = 2
+wait(0.1)
+Blur.Size = 1
+wait(0.1)
+Blur.Size = 0
+
+
+
+
+print('Loading..Bloom')
+wait(2)
+print('Loading..Lens Flares')
+
+
+print("Done!")
+
+
+while wait(1) do
+	for i,v in pairs(game.Players:GetPlayers()) do
+		if v.PlayerGui:FindFirstChild("LensFlareGui") == nil then
+			gui = script.LensFlareGui:Clone()
+			gui.Parent = v.PlayerGui
+		end
+	end
+end

@@ -1,0 +1,11 @@
+local ti = script.Parent:FindFirstChild("TouchInterest")
+if ti then
+	ti:Destroy()
+end
+
+script.Parent.ChildAdded:Connect(function(child)
+	if child:IsA("TouchTransmitter") then
+		wait()
+		child:Destroy()
+	end
+end)

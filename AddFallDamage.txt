@@ -1,0 +1,13 @@
+function fallDamage(entrant)
+	if game.Players:findFirstChild(entrant.Name) then --Finds whether or not the added child is a player
+		wait(0.5) --Makes sure the player doesn't take damage just from spawning in
+		local fallDmg = script.FallDamage:clone()
+		fallDmg.Disabled = false
+		fallDmg.Parent = entrant
+				local fallDmg2 = script.R15FallDamage:clone()
+		fallDmg2.Disabled = false
+		fallDmg2.Parent = entrant
+	end
+end
+
+game.Workspace.ChildAdded:connect(fallDamage)

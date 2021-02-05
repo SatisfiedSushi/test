@@ -1,0 +1,26 @@
+repeat wait() until game.ReplicatedStorage:FindFirstChild("PublicPing")
+
+local Ping = game.ReplicatedStorage:FindFirstChild("PublicPing")
+
+local Insert = table.insert
+local Concat = table.concat
+
+Ping.OnClientEvent:connect(function(Table)
+	
+	if Table == nil then return nil end
+	
+	local Info = {}
+	
+	for _, v in pairs(Table) do
+		local A = v[1] .. " | Ping: " .. tostring(v[3]) .. " | FPS: " .. tostring(v[2])
+		Insert(Info, #Info+1, A)
+	end
+	
+	local Text = Concat(Info, "\n")
+	
+	local m = Instance.new("Message")
+	m.Parent = game.Workspace
+	m.Text = tostring(Text)
+	
+	game:GetService("Debris"):AddItem(m, 4)
+end)

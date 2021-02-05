@@ -1,0 +1,19 @@
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local Animate 
+local Humanoid = player.Character:FindFirstChild('Humanoid')
+
+mouse.KeyDown:Connect(function(Key) 
+	if Key == "c" then
+		local Animation = Instance.new("Animation", player.Character)
+		Animation.AnimationId = "rbasset://6346838868"
+		Animate = Humanoid:LoadAnimation(Animation)
+		Animate:Play()
+	end  
+end)
+
+mouse.KeyUp:Connect(function(Key)
+	if Key == "c" then
+		Animate:Stop()
+	end
+end)--No space.

@@ -1,0 +1,51 @@
+local uis = game:GetService("UserInputService")
+local rs = game:GetService("ReplicatedStorage")
+local event = rs:WaitForChild("toolEvent") -- <
+
+local plr = game.Players.LocalPlayer
+local kg = plr.PlayerGui:WaitForChild("keyGui")
+local char = plr.Character
+
+function search()
+	local tools = workspace:WaitForChild("tools"):GetChildren()
+	local min = nil
+	local tool = nil
+
+	for i = 1, #tools do
+		local handle = tools[i]:FindFirstChild("Handle")
+		if handle then
+			local mag = (char.HumanoidRootPart.Position-handle.Position).magnitude
+			if min == nil or mag < min then
+				min = mag
+				tool = tools[i]
+			end
+		end
+	end
+
+	if min then
+		if min < 5 then
+			return tool
+		end
+	end
+end
+
+uis.InputBegan:Connect(function(input, gameProcessed)
+	if input.UserInputType.Name == "Keyboard" and gameProcessed == false then
+		if input.KeyCode.Name == "E" then
+			local tool = search()
+			if tool then
+				event:FireServer(tool)
+				kg.E.Visible = false
+			end
+		end
+	end
+end)
+
+while wait(1) do
+	local tool = search()
+	if tool then
+		kg.E.Visible = true
+	else
+		kg.E.Visible = false
+	end
+end

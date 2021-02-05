@@ -1,0 +1,15 @@
+local Ping_remote = game.ReplicatedStorage:WaitForChild("PingSend")
+local Tick = game.ReplicatedStorage:WaitForChild("GameTick")
+
+Ping_remote.OnClientEvent:connect(function(...)
+	
+	local Argumentos = {...}
+	local Ping = Argumentos[1]
+	
+	script.Parent.Text = tostring(Ping).. " ms"
+end)
+
+while wait(1.5) do
+	local Tiempo = Tick.Value
+	Ping_remote:FireServer(Tiempo)
+end

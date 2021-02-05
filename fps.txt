@@ -1,0 +1,15 @@
+local FPS = 0
+
+local Tiempo = tick()
+
+spawn(function()
+	while game:GetService("RunService").RenderStepped:wait() do
+		local Transcurrido = math.abs(Tiempo-tick())
+		Tiempo = tick()
+		FPS = math.floor(1/Transcurrido)
+	end
+end)
+
+while wait(0.5) do
+	script.Parent.Text = tostring(FPS) .. " fps"
+end

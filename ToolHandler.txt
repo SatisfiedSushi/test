@@ -1,0 +1,39 @@
+local re = Instance.new("RemoteEvent")
+re.Parent = game:GetService("ReplicatedStorage")
+re.Name = "toolEvent"
+
+re.OnServerEvent:Connect(function(plr, tool)
+	local mag = (tool:WaitForChild("Handle").Position - plr.Character.HumanoidRootPart.Position).magnitude
+
+	if mag < 5 then
+		tool.Parent = plr.Backpack
+	end
+end)
+
+function untouch(list)
+	for i = 1, #list do
+		local handle = list[i]:WaitForChild("Handle")
+		if handle then
+			local ti = handle:FindFirstChild("antiTouch") -- <
+			if not ti then
+				local clone = script.antiTouch:Clone() -- <
+				clone.Parent = handle
+				clone.Disabled = false
+			end
+		end
+	end
+end
+
+local tools = workspace:WaitForChild("tools"):GetChildren()
+untouch(tools)
+
+workspace.tools.ChildAdded:Connect(function(child)
+	untouch({child})
+end)
+
+workspace.ChildAdded:Connect(function(child)
+	if child:IsA("Tool") then
+		wait()
+		child.Parent = workspace.tools
+	end
+end)
